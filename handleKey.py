@@ -35,10 +35,15 @@ THING_NAME = os.getenv('AWS_IOT_THING_NAME', 'unknown')
 
 current_state = State.AVAILABLE
 requested_state = ''
+print("launched")
 ipc_client = awsiot.greengrasscoreipc.connect()
+print("connected to aws iot")
 
 keybow.setup(keybow.MINI)
+keybow.set_led(0, 255, 255, 255)
+print("hardware initialized")
 
+print("ready")
 
 @keybow.on()
 def handle_key(index, state):
@@ -62,6 +67,7 @@ def handle_key(index, state):
         respond(None)
 
 def change_state(changeSource, requestedState):
+    print("state change to {} requested from {}", requestedState, changeSource)
     try:
         if requestedState == State.BUSY:
             keybow.set_led(0, 255, 0, 0)
@@ -81,7 +87,8 @@ def change_state(changeSource, requestedState):
         else:
             print("unrecognized request: " + requestedState)
             return False
-
+            
+        print("successfully set state")
         return True
     except: 
         traceback.print_exc()
